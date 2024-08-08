@@ -32,6 +32,8 @@ config.inactive_pane_hsb = {
 	brightness = 0.2,
 }
 
+config.enable_wayland = false
+
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
 	------------------------------------------------------------------------
@@ -43,9 +45,18 @@ config.keys = {
 		action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
-		key = "\\",
+		key = "=",
 		mods = "LEADER",
 		action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+	},
+
+	------------------------------------------------------------------------
+	---                        ClOSE CURRENT PANE                        ---
+	------------------------------------------------------------------------
+	{
+		key = "c",
+		mods = "SUPER",
+		action = act.CloseCurrentPane({ confirm = true }),
 	},
 
 	------------------------------------------------------------------------
