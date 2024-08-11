@@ -64,22 +64,22 @@ config.keys = {
 	------------------------------------------------------------------------
 	{
 		key = "LeftArrow",
-		mods = "CTRL",
+		mods = "SUPER|CTRL",
 		action = act.ActivatePaneDirection("Left"),
 	},
 	{
 		key = "RightArrow",
-		mods = "CTRL",
+		mods = "SUPER|CTRL",
 		action = act.ActivatePaneDirection("Right"),
 	},
 	{
 		key = "UpArrow",
-		mods = "CTRL",
+		mods = "SUPER|CTRL",
 		action = act.ActivatePaneDirection("Up"),
 	},
 	{
 		key = "DownArrow",
-		mods = "CTRL",
+		mods = "SUPER|CTRL",
 		action = act.ActivatePaneDirection("Down"),
 	},
 
@@ -105,7 +105,8 @@ wezterm.on("update-right-status", function(window, pane)
 	end
 
 	window:set_right_status(wezterm.format({
-		{ Text = bat .. "   " .. date },
+		{ Text = bat .. "   " },
+		{ Text = wezterm.nerdfonts.fa_clock_o .. " " .. date },
 	}))
 end)
 
