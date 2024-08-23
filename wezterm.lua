@@ -3,36 +3,35 @@ local config = {}
 local act = wezterm.action
 local mux = wezterm.mux
 
+config.default_prog = { "pwsh.exe", "-l" }
+
 config.font = wezterm.font("JetBrains Mono", { weight = "Black", italic = true })
-config.font_size = 10.0
+config.font_size = 12.0
 config.color_scheme = "Catppuccin Mocha"
 
 config.bold_brightens_ansi_colors = "BrightAndBold"
 config.default_cursor_style = "BlinkingBar"
 config.cursor_blink_ease_in = "Linear"
 config.cursor_blink_ease_out = "Linear"
-config.cursor_blink_rate = 800
+config.cursor_blink_rate = 300
 config.cursor_thickness = 1
 config.underline_thickness = 1
 
 config.use_fancy_tab_bar = false
-config.show_tabs_in_tab_bar = false
+config.show_tabs_in_tab_bar = true
+config.tab_bar_at_bottom = false
 config.show_new_tab_button_in_tab_bar = false
 
 config.window_decorations = "NONE"
-config.window_background_image = "./Pictures/samurai_wallpaper.jpeg"
-
-config.window_background_image_hsb = {
-	brightness = 0.3,
-	saturation = 1.5,
-}
+config.window_background_opacity = 1
+config.win32_system_backdrop = "Mica"
 
 config.inactive_pane_hsb = {
 	saturation = 1,
 	brightness = 0.2,
 }
 
-config.enable_wayland = false
+config.front_end = "OpenGL"
 
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
@@ -55,7 +54,7 @@ config.keys = {
 	------------------------------------------------------------------------
 	{
 		key = "c",
-		mods = "SUPER",
+		mods = "CTRL|SHIFT",
 		action = act.CloseCurrentPane({ confirm = true }),
 	},
 
@@ -64,50 +63,81 @@ config.keys = {
 	------------------------------------------------------------------------
 	{
 		key = "LeftArrow",
-		mods = "SUPER|CTRL",
+		mods = "ALT|CTRL",
 		action = act.ActivatePaneDirection("Left"),
 	},
 	{
 		key = "RightArrow",
-		mods = "SUPER|CTRL",
+		mods = "ALT|CTRL",
 		action = act.ActivatePaneDirection("Right"),
 	},
 	{
 		key = "UpArrow",
-		mods = "SUPER|CTRL",
+		mods = "ALT|CTRL",
 		action = act.ActivatePaneDirection("Up"),
 	},
 	{
 		key = "DownArrow",
-		mods = "SUPER|CTRL",
+		mods = "ALT|CTRL",
 		action = act.ActivatePaneDirection("Down"),
 	},
 
 	{
-		key = "n",
+		key = "f",
 		mods = "SHIFT|CTRL",
-		action = wezterm.action.ToggleFullScreen,
+		action = act.ToggleFullScreen,
+	},
+
+	------------------------------------------------------------------------
+	---                           OPEN TABS                              ---
+	------------------------------------------------------------------------
+	{
+		key = "t",
+		mods = "CTRL|SHIFT",
+		action = act.SpawnTab("CurrentPaneDomain"),
+	},
+
+	------------------------------------------------------------------------
+	---                           CLOSE TABS                             ---
+	------------------------------------------------------------------------
+	{
+		key = "w",
+		mods = "CTRL|SHIFT",
+		action = act.CloseCurrentTab({ confirm = true }),
+	},
+
+	------------------------------------------------------------------------
+	---                           SWITCH TABS                            ---
+	------------------------------------------------------------------------
+	{
+		key = "[",
+		mods = "ALT",
+		action = act.ActivateTabRelative(-1),
+	},
+	{
+		key = "]",
+		mods = "ALT",
+		action = act.ActivateTabRelative(1),
 	},
 }
 
-wezterm.on("gui-startup", function(cmd)
-	local tab, pane, window = mux.spawn_window(cmd or {})
-	window:gui_window():maximize()
-end)
+--wezterm.on("gui-startup", function(cmd)
+--local tab, pane, window = mux.spawn_window(cmd or {})
+--window:gui_window():maximize()
+--end)
 
 wezterm.on("update-right-status", function(window, pane)
-	-- "Wed Mar 3 08:14"
+	--"Wed Mar 3 08:14"
 	local date = wezterm.strftime("%a %b %-d %H:%M ")
 
-	local bat = ""
-	for _, b in ipairs(wezterm.battery_info()) do
-		bat = "🔋 " .. string.format("%.0f%%", b.state_of_charge * 100)
-	end
-
 	window:set_right_status(wezterm.format({
-		{ Text = bat .. "   " },
-		{ Text = wezterm.nerdfonts.fa_clock_o .. " " .. date },
+		{ Text = wezterm.nerdfonts.fa_clock_o .. "  " .. date },
 	}))
+end)
+
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+	local title = " " .. tab.tab_id .. " "
+	return title
 end)
 
 return config
